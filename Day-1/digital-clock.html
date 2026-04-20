@@ -1,0 +1,218 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Digital Clock</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    #clock {
+      font-size: 50px;
+      border: 2px solid white;
+      padding: 20px 40px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="clock">00:00:00</div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      let seconds = now.getSeconds();
+
+      // Add leading zero if needed
+      hours = hours < 10 ? "0" + hours : hours;
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+
+      const time = hours + ":" + minutes + ":" + seconds;
+
+      document.getElementById("clock").innerText = time;
+    }
+
+    // Update every second
+    setInterval(updateClock, 1000);
+
+    // Call once immediately so it doesn't wait 1 sec
+    updateClock();
+  </script>
+
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Glass Flip Clock</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background:black;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      padding: 40px 60px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .clock {
+      display: flex;
+      gap: 12px;
+    }
+
+    .flip {
+      position: relative;
+      width: 70px;
+      height: 90px;
+      perspective: 300px;
+    }
+
+    .card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      line-height: 90px;
+      font-size: 45px;
+      font-weight: bold;
+      color: #fff;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(5px);
+      box-shadow: inset 2px 2px 5px rgba(74, 44, 172, 0.2),
+                  inset -2px -2px 5px rgba(0,0,0,0.3);
+      backface-visibility: hidden;
+    }
+
+    .top {
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .bottom {
+      transform: rotateX(180deg);
+      border-top: 1px solid rgba(0,0,0,0.2);
+    }
+
+    .flip.animate .top {
+      animation: flipTop 0.6s forwards;
+    }
+
+    .flip.animate .bottom {
+      animation: flipBottom 0.6s forwards;
+    }
+
+    @keyframes flipTop {
+      0% { transform: rotateX(0deg); }
+      100% { transform: rotateX(-90deg); }
+    }
+
+    @keyframes flipBottom {
+      0% { transform: rotateX(90deg); }
+      100% { transform: rotateX(0deg); }
+    }
+
+    .separator {
+      font-size: 40px;
+      color: white;
+      display: flex;
+      align-items: center;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="clock" id="clock"></div>
+</div>
+
+<script>
+  function createDigit() {
+    const flip = document.createElement("div");
+    flip.className = "flip";
+
+    flip.innerHTML = `
+      <div class="card top">0</div>
+      <div class="card bottom">0</div>
+    `;
+
+    return flip;
+  }
+
+  function createSeparator() {
+    const sep = document.createElement("div");
+    sep.className = "separator";
+    sep.innerText = ":";
+    return sep;
+  }
+
+  const clock = document.getElementById("clock");
+  const digits = [];
+
+  // Build layout HH:MM:SS
+  for (let i = 0; i < 6; i++) {
+    if (i === 2 || i === 4) {
+      clock.appendChild(createSeparator());
+    }
+    const digit = createDigit();
+    clock.appendChild(digit);
+    digits.push(digit);
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const time = [
+      String(now.getHours()).padStart(2, "0"),
+      String(now.getMinutes()).padStart(2, "0"),
+      String(now.getSeconds()).padStart(2, "0")
+    ].join("");
+
+    time.split("").forEach((num, i) => {
+      const digit = digits[i];
+      const top = digit.querySelector(".top");
+      const bottom = digit.querySelector(".bottom");
+
+      if (top.innerText !== num) {
+        digit.classList.add("animate");
+
+        setTimeout(() => {
+          top.innerText = num;
+          bottom.innerText = num;
+          digit.classList.remove("animate");
+        }, 600);
+      }
+    });
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+
+</body>
+</html>
