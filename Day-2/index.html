@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Theme Toggle</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: sans-serif;
+            background: #1e1e1e;
+            transition: 0.4s;
+        }
+
+        body.light {
+            background: #e0e0e0;
+        }
+
+        /* MAIN CARD */
+        .card {
+            padding: 40px 50px;
+            border-radius: 30px;
+            text-align: center;
+
+            background: #1e1e1e;
+            box-shadow:
+                10px 10px 25px #141414,
+                -10px -10px 25px #2a2a2a;
+
+            transition: 0.4s;
+        }
+
+        body.light .card {
+            background: #e0e0e0;
+            box-shadow:
+                10px 10px 25px #bebebe,
+                -10px -10px 25px #ffffff;
+        }
+
+        /* HEADING */
+        .animated-text {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 30px;
+
+            background: linear-gradient(90deg, #fff, #aaa, #fff);
+            background-size: 200% auto;
+
+            background-clip: text;
+            -webkit-background-clip: text;
+
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+
+
+            animation: shine 3s linear infinite;
+        }
+
+
+        body.light .animated-text {
+            background: none;
+            -webkit-text-fill-color: #111;
+
+            animation: none;
+            color: #111;
+            animation: pulse 2s ease-in-out infinite alternate;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes pulse {
+            from {
+                opacity: 0.7;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Shine animation */
+        @keyframes shine {
+            0% {
+                background-position: 200%;
+            }
+
+            100% {
+                background-position: -200%;
+            }
+        }
+
+        /* Wrapper */
+        .wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Labels */
+        .label-text {
+            font-size: 18px;
+            color: #aaa;
+        }
+
+        .active-text {
+            color: #fff;
+        }
+
+        body.light .label-text {
+            color: #666;
+        }
+
+        body.light .active-text {
+            color: #000;
+        }
+
+        /* Toggle */
+        .toggle {
+            width: 140px;
+            height: 60px;
+            border-radius: 40px;
+            position: relative;
+            cursor: pointer;
+
+            background: #1e1e1e;
+            box-shadow:
+                8px 8px 15px #141414,
+                -8px -8px 15px #2a2a2a;
+        }
+
+        body.light .toggle {
+            background: #e0e0e0;
+            box-shadow:
+                8px 8px 15px #bebebe,
+                -8px -8px 15px #ffffff;
+        }
+
+        /* Knob */
+        .knob {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: #1e1e1e;
+            box-shadow:
+                5px 5px 10px #141414,
+                -5px -5px 10px #2a2a2a;
+
+            transition: 0.4s ease;
+        }
+
+        body.light .knob {
+            background: #e0e0e0;
+            box-shadow:
+                5px 5px 10px #bebebe,
+                -5px -5px 10px #ffffff;
+        }
+
+        /* Move knob */
+        .toggle.active .knob {
+            transform: translateX(80px);
+        }
+
+        /* Icons */
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .sun {
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .moon {
+            opacity: 1;
+            position: absolute;
+            transition: 0.3s;
+        }
+
+        .toggle.active .sun {
+            opacity: 1;
+        }
+
+        .toggle.active .moon {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+
+        <div class="animated-text">Theme Toggle</div>
+
+        <div class="wrapper">
+            <span id="darkText" class="label-text active-text">Dark</span>
+
+            <div class="toggle" id="toggle">
+                <div class="knob">
+
+                    <svg class="moon" viewBox="0 0 24 24" fill="#ccc">
+                        <path d="M21 12.79A9 9 0 0 1 11.21 3 
+                   7 7 0 1 0 21 12.79z" />
+                    </svg>
+
+                    <svg class="sun" viewBox="0 0 24 24" fill="#f5b301">
+                        <circle cx="12" cy="12" r="5" />
+                    </svg>
+
+                </div>
+            </div>
+
+            <span id="lightText" class="label-text">Light</span>
+        </div>
+
+    </div>
+
+    <script>
+        const toggle = document.getElementById("toggle");
+        const darkText = document.getElementById("darkText");
+        const lightText = document.getElementById("lightText");
+
+        // Load
+        let mode = localStorage.getItem("mode");
+
+        if (mode === "light") {
+            toggle.classList.add("active");
+            document.body.classList.add("light");
+        }
+
+        updateUI();
+
+        // Click
+        toggle.addEventListener("click", () => {
+            toggle.classList.toggle("active");
+            document.body.classList.toggle("light");
+
+            updateUI();
+
+            let isLight = toggle.classList.contains("active");
+            localStorage.setItem("mode", isLight ? "light" : "dark");
+        });
+
+        // Sync
+        function updateUI() {
+            let isLight = toggle.classList.contains("active");
+
+            if (isLight) {
+                lightText.classList.add("active-text");
+                darkText.classList.remove("active-text");
+            } else {
+                darkText.classList.add("active-text");
+                lightText.classList.remove("active-text");
+            }
+        }
+    </script>
+
+</body>
+
+</html>
