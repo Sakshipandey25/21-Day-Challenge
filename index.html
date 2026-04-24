@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Signup Form Validation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(135deg,#6a11cb,#2575fc);
+            padding:20px;
+        }
+
+        .container{
+            width:400px;
+            background:#fff;
+            border-radius:25px;
+            box-shadow:0 20px 50px rgba(0,0,0,0.3);
+            overflow:hidden;
+            animation:fadeIn 0.8s ease;
+        }
+
+        .header{
+            background:linear-gradient(135deg,#8e44ad,#3498db);
+            color:#fff;
+            text-align:center;
+            padding:35px 20px;
+        }
+
+        .header h1{
+            font-size:32px;
+            margin-bottom:10px;
+        }
+
+        .header p{
+            font-size:14px;
+            opacity:0.9;
+        }
+
+        .form-container{
+            padding:30px;
+        }
+
+        .tabs{
+            display:flex;
+            background:#f1f1f1;
+            border-radius:12px;
+            margin-bottom:25px;
+            overflow:hidden;
+        }
+
+        .tab-btn{
+            flex:1;
+            padding:14px;
+            border:none;
+            background:transparent;
+            cursor:pointer;
+            font-size:16px;
+            font-weight:600;
+            transition:.3s;
+        }
+
+        .tab-btn.active{
+            background:#6a11cb;
+            color:#fff;
+        }
+
+        .form{
+            display:none;
+        }
+
+        .form.active{
+            display:block;
+        }
+
+        .input-box{
+            margin-bottom:20px;
+            position:relative;
+        }
+
+        .input-box i{
+            position:absolute;
+            left:15px;
+            top:17px;
+            color:#777;
+        }
+
+        .input-box input{
+            width:100%;
+            padding:14px 45px;
+            border:2px solid #ddd;
+            border-radius:12px;
+            font-size:15px;
+            outline:none;
+            transition:.3s;
+        }
+
+        .input-box input:focus{
+            border-color:#6a11cb;
+        }
+
+        .toggle-password{
+            position:absolute;
+            right:15px;
+            top:17px;
+            cursor:pointer;
+        }
+
+        .error{
+            color:#e74c3c;
+            font-size:13px;
+            margin-top:5px;
+            display:block;
+        }
+
+        .success{
+            border-color:#2ecc71 !important;
+        }
+
+        .error-input{
+            border-color:#e74c3c !important;
+        }
+
+        .options{
+            display:flex;
+            justify-content:space-between;
+            margin-bottom:20px;
+            font-size:14px;
+        }
+
+        .options a{
+            text-decoration:none;
+            color:#6a11cb;
+        }
+
+        .btn{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:12px;
+            background:linear-gradient(135deg,#6a11cb,#2575fc);
+            color:#fff;
+            font-size:17px;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        .btn:hover{
+            transform:translateY(-2px);
+        }
+
+        .message{
+            text-align:center;
+            margin-top:15px;
+            color:#27ae60;
+            font-weight:bold;
+        }
+
+        @keyframes fadeIn{
+            from{
+                opacity:0;
+                transform:translateY(30px);
+            }
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+        @media(max-width:450px){
+            .container{
+                width:100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Welcome</h1>
+            <p>Login or Create Your Account</p>
+        </div>
+
+        <div class="form-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchForm('login',this)">Login</button>
+                <button class="tab-btn" onclick="switchForm('signup',this)">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login" class="form active">
+                <div class="input-box">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="loginEmail" placeholder="Email">
+                    <small class="error"></small>
+                </div>
+
+                <div class="input-box">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password">
+                    <i class="fas fa-eye toggle-password"></i>
+                    <small class="error"></small>
+                </div>
+
+                <div class="options">
+                    <label><input type="checkbox"> Remember Me</label>
+                    <a href="#">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn">Login</button>
+                <p class="message" id="loginMsg"></p>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signup" class="form">
+                <div class="input-box">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="name" placeholder="Full Name">
+                    <small class="error"></small>
+                </div>
+
+                <div class="input-box">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="signupEmail" placeholder="Email">
+                    <small class="error"></small>
+                </div>
+
+                <div class="input-box">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="signupPassword" placeholder="Password">
+                    <i class="fas fa-eye toggle-password"></i>
+                    <small class="error"></small>
+                </div>
+
+                <div class="input-box">
+                    <i class="fas fa-shield-alt"></i>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password">
+                    <i class="fas fa-eye toggle-password"></i>
+                    <small class="error"></small>
+                </div>
+
+                <button type="submit" class="btn">Create Account</button>
+                <p class="message" id="signupMsg"></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function switchForm(formId, btn){
+            document.querySelectorAll('.form').forEach(form=>{
+                form.classList.remove('active');
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(button=>{
+                button.classList.remove('active');
+            });
+
+            document.getElementById(formId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function showError(input, message){
+            const error = input.parentElement.querySelector('.error');
+            error.textContent = message;
+            input.classList.add('error-input');
+            input.classList.remove('success');
+        }
+
+        function showSuccess(input){
+            const error = input.parentElement.querySelector('.error');
+            error.textContent = "";
+            input.classList.remove('error-input');
+            input.classList.add('success');
+        }
+
+        function validateEmail(email){
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        /* Real Time Validation */
+        document.querySelectorAll('input').forEach(input=>{
+            input.addEventListener('input',()=>{
+                if(input.type !== 'checkbox'){
+                    if(input.value.trim() !== ""){
+                        showSuccess(input);
+                    }
+                }
+            });
+        });
+
+        /* Login Form */
+        document.getElementById('login').addEventListener('submit',function(e){
+            e.preventDefault();
+
+            const email = document.getElementById('loginEmail');
+            const password = document.getElementById('loginPassword');
+            let valid = true;
+
+            if(!validateEmail(email.value.trim())){
+                showError(email,'Enter a valid email');
+                valid = false;
+            }else{
+                showSuccess(email);
+            }
+
+            if(password.value.length < 6){
+                showError(password,'Password must be at least 6 characters');
+                valid = false;
+            }else{
+                showSuccess(password);
+            }
+
+            if(valid){
+                document.getElementById('loginMsg').textContent =
+                    "Login Successful!";
+                this.reset();
+            }
+        });
+
+        /* Signup Form */
+        document.getElementById('signup').addEventListener('submit',function(e){
+            e.preventDefault();
+
+            const name = document.getElementById('name');
+            const email = document.getElementById('signupEmail');
+            const password = document.getElementById('signupPassword');
+            const confirm = document.getElementById('confirmPassword');
+
+            let valid = true;
+
+            if(name.value.trim().length < 3){
+                showError(name,'Name must be at least 3 characters');
+                valid = false;
+            }else{
+                showSuccess(name);
+            }
+
+            if(!validateEmail(email.value.trim())){
+                showError(email,'Enter a valid email');
+                valid = false;
+            }else{
+                showSuccess(email);
+            }
+
+            if(password.value.length < 6){
+                showError(password,'Password must be at least 6 characters');
+                valid = false;
+            }else{
+                showSuccess(password);
+            }
+
+            if(confirm.value !== password.value){
+                showError(confirm,'Passwords do not match');
+                valid = false;
+            }else{
+                showSuccess(confirm);
+            }
+
+            if(valid){
+                document.getElementById('signupMsg').textContent =
+                    "Account Created Successfully!";
+                this.reset();
+            }
+        });
+
+        /* Password Toggle */
+        document.querySelectorAll('.toggle-password').forEach(icon=>{
+            icon.addEventListener('click',function(){
+                const input = this.previousElementSibling;
+
+                if(input.type === 'password'){
+                    input.type = 'text';
+                    this.classList.replace('fa-eye','fa-eye-slash');
+                }else{
+                    input.type = 'password';
+                    this.classList.replace('fa-eye-slash','fa-eye');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
