@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced To-Do App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        input:focus {
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            background: #667eea;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        li {
+            background: #f7f7f7;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        li.completed span {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .task-text {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .complete-btn {
+            background: #28a745;
+        }
+
+        .edit-btn {
+            background: #ffc107;
+            color: black;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #777;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 500px) {
+            .input-box {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            li {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📝 Advanced To-Do App</h1>
+
+        <div class="input-box">
+            <input type="text" id="taskInput" placeholder="Enter your task...">
+            <button onclick="addTask()">Add</button>
+        </div>
+
+        <ul id="taskList"></ul>
+
+        <p class="empty-message" id="emptyMessage">No tasks added yet!</p>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+        const taskInput = document.getElementById("taskInput");
+        const taskList = document.getElementById("taskList");
+        const emptyMessage = document.getElementById("emptyMessage");
+
+        function saveTasks() {
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        function renderTasks() {
+            taskList.innerHTML = "";
+
+            if (tasks.length === 0) {
+                emptyMessage.style.display = "block";
+            } else {
+                emptyMessage.style.display = "none";
+            }
+
+            tasks.forEach((task, index) => {
+                const li = document.createElement("li");
+                if (task.completed) {
+                    li.classList.add("completed");
+                }
+
+                li.innerHTML = `
+                    <span class="task-text">${task.text}</span>
+                    <div class="actions">
+                        <button class="complete-btn" onclick="toggleComplete(${index})">
+                            ${task.completed ? "Undo" : "Done"}
+                        </button>
+                        <button class="edit-btn" onclick="editTask(${index})">Edit</button>
+                        <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
+                    </div>
+                `;
+
+                taskList.appendChild(li);
+            });
+        }
+
+        function addTask() {
+            const text = taskInput.value.trim();
+
+            if (text === "") {
+                alert("Please enter a task!");
+                return;
+            }
+
+            tasks.push({
+                text: text,
+                completed: false
+            });
+
+            taskInput.value = "";
+            saveTasks();
+            renderTasks();
+        }
+
+        function toggleComplete(index) {
+            tasks[index].completed = !tasks[index].completed;
+            saveTasks();
+            renderTasks();
+        }
+
+        function editTask(index) {
+            const updatedText = prompt("Edit your task:", tasks[index].text);
+
+            if (updatedText !== null && updatedText.trim() !== "") {
+                tasks[index].text = updatedText.trim();
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        function deleteTask(index) {
+            if (confirm("Delete this task?")) {
+                tasks.splice(index, 1);
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        taskInput.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                addTask();
+            }
+        });
+
+        renderTasks();
+    </script>
+
+</body>
+</html>
