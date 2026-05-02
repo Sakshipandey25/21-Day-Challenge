@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search with Debounce</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #667eea;
+        }
+
+        .status {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f4f6ff;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .typing {
+            color: #764ba2;
+            font-weight: bold;
+        }
+
+        .searching {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🔍 Search with Debounce</h1>
+
+        <div class="search-box">
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Start typing..."
+            >
+        </div>
+
+        <div class="status" id="status">
+            Type something to search...
+        </div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById("searchInput");
+        const status = document.getElementById("status");
+        const results = document.getElementById("results");
+
+        const data = [
+            "JavaScript",
+            "Java",
+            "Python",
+            "React",
+            "Node.js",
+            "HTML",
+            "CSS",
+            "MongoDB",
+            "Express",
+            "TypeScript",
+            "Angular",
+            "Vue.js",
+            "Next.js",
+            "Tailwind CSS"
+        ];
+
+        function debounce(func, delay) {
+            let timer;
+
+            return function (...args) {
+                clearTimeout(timer);
+
+                status.innerHTML = '<span class="typing">Typing...</span>';
+
+                timer = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+
+        function performSearch(query) {
+            if (query.trim() === "") {
+                status.textContent = "Type something to search...";
+                results.innerHTML = "";
+                return;
+            }
+
+            status.innerHTML = '<span class="searching">Searching...</span>';
+
+            setTimeout(() => {
+                const filtered = data.filter(item =>
+                    item.toLowerCase().includes(query.toLowerCase())
+                );
+
+                displayResults(filtered);
+
+                status.textContent = `${filtered.length} result(s) found`;
+            }, 500);
+        }
+
+        function displayResults(items) {
+            if (items.length === 0) {
+                results.innerHTML = "<div class='result-item'>No results found.</div>";
+                return;
+            }
+
+            results.innerHTML = items
+                .map(item => `<div class="result-item">${item}</div>`)
+                .join("");
+        }
+
+        const debouncedSearch = debounce(performSearch, 800);
+
+        searchInput.addEventListener("input", (e) => {
+            debouncedSearch(e.target.value);
+        });
+    </script>
+
+</body>
+</html>
