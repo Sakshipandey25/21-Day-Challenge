@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Generator</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      width: 320px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .output {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .output input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px 0 0 8px;
+      outline: none;
+    }
+
+    .output button {
+      padding: 10px;
+      border: none;
+      background: #667eea;
+      color: white;
+      cursor: pointer;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background: #764ba2;
+      color: white;
+      margin-top: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn:hover {
+      background: #5a3a85;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Password Generator</h2>
+
+  <div class="output">
+    <input type="text" id="password" readonly>
+    <button onclick="copyPassword()">Copy</button>
+  </div>
+
+  <div class="row">
+    <label>Password Length: <span id="lengthValue">8</span></label>
+  </div>
+  <input type="range" min="4" max="20" value="8" id="length">
+
+  <div class="row">
+    <label>Uppercase</label>
+    <input type="checkbox" id="upper" checked>
+  </div>
+
+  <div class="row">
+    <label>Lowercase</label>
+    <input type="checkbox" id="lower" checked>
+  </div>
+
+  <div class="row">
+    <label>Numbers</label>
+    <input type="checkbox" id="number" checked>
+  </div>
+
+  <div class="row">
+    <label>Symbols</label>
+    <input type="checkbox" id="symbol">
+  </div>
+
+  <button class="btn" onclick="generatePassword()">Generate Password</button>
+</div>
+
+<script>
+
+const lengthSlider = document.getElementById("length");
+const lengthValue = document.getElementById("lengthValue");
+
+lengthSlider.addEventListener("input", () => {
+  lengthValue.textContent = lengthSlider.value;
+});
+
+function generatePassword() {
+  const length = lengthSlider.value;
+  const upper = document.getElementById("upper").checked;
+  const lower = document.getElementById("lower").checked;
+  const number = document.getElementById("number").checked;
+  const symbol = document.getElementById("symbol").checked;
+
+  const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowerChars = "abcdefghijklmnopqrstuvwxyz";
+  const numberChars = "0123456789";
+  const symbolChars = "!@#$%^&*()_+";
+
+  let allChars = "";
+
+  if (upper) allChars += upperChars;
+  if (lower) allChars += lowerChars;
+  if (number) allChars += numberChars;
+  if (symbol) allChars += symbolChars;
+
+  if (allChars === "") {
+    alert("Please select at least one option!");
+    return;
+  }
+
+  let password = "";
+
+  for (let i = 0; i < length; i++) {
+    password += allChars[Math.floor(Math.random() * allChars.length)];
+  }
+
+  document.getElementById("password").value = password;
+}
+
+function copyPassword() {
+  const passwordField = document.getElementById("password");
+
+  if (passwordField.value === "") {
+    alert("No password to copy!");
+    return;
+  }
+
+  passwordField.select();
+  document.execCommand("copy");
+
+  alert("Copied to clipboard!");
+}
+
+</script>
+
+</body>
+</html>
