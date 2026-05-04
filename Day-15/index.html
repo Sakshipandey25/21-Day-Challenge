@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-commerce Page</title>
+
+<style>
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #f4f4f4;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: #222;
+  color: white;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+button {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background: #e60000;
+}
+
+.cart-box {
+  background: white;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <h2>My Shop</h2>
+  <div>🛒 Cart: <span id="cart-count">0</span></div>
+</header>
+
+<section class="products" id="product-list"></section>
+
+<section class="cart-box">
+  <h3>Cart Summary</h3>
+  <p>Total Items: <span id="total-items">0</span></p>
+  <p>Total Price: ₹<span id="total-price">0</span></p>
+</section>
+
+<script>
+const products = [
+  { id: 1, name: "Shoes", price: 1200, img: "https://hitz.co.in/cdn/shop/files/7567-BLACK_563984ef-59ec-4bf9-a5ce-651b0705f088.jpg?v=1755618676", },
+  { id: 2, name: "Watch", price: 2500, img: "https://www.sonatawatches.in/dw/image/v2/BKDD_PRD/on/demandware.static/-/Sites-titan-master-catalog/default/dw7b993993/images/Sonata/Catalog/7152QM01_1.jpg?sw=600&sh=600" },
+  { id: 3, name: "Bag", price: 1800, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHOnm6N5ubyVzBsXO_DAiGi0QIPd7MPt2gjQ&s" },
+  { id: 4, name: "Headphones", price: 2200, img: "https://m.media-amazon.com/images/I/61G30Byl1sL.jpg" }
+];
+
+let cart = [];
+
+const productList = document.getElementById("product-list");
+const cartCount = document.getElementById("cart-count");
+const totalItems = document.getElementById("total-items");
+const totalPrice = document.getElementById("total-price");
+
+// Show products
+products.forEach(product => {
+  const card = document.createElement("div");
+  card.classList.add("card");
+
+  card.innerHTML = `
+    <img src="${product.img}">
+    <h3>${product.name}</h3>
+    <p>₹${product.price}</p>
+    <button onclick="addToCart(${product.id})">Add to Cart</button>
+  `;
+
+  productList.appendChild(card);
+});
+
+// Add to cart
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  cart.push(product);
+  updateCart();
+}
+
+// Update cart
+function updateCart() {
+  cartCount.innerText = cart.length;
+  totalItems.innerText = cart.length;
+
+  let total = 0;
+  cart.forEach(item => total += item.price);
+  totalPrice.innerText = total;
+}
+</script>
+
+</body>
+</html>
