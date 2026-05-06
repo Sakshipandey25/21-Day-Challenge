@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Auth UI</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+}
+
+.container {
+  width: 350px;
+  background: #111;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.1);
+}
+
+h2 {
+  text-align: center;
+  color: white;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  background: #222;
+  color: white;
+}
+
+input::placeholder {
+  color: #aaa;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #ddd;
+}
+
+.toggle {
+  text-align: center;
+  color: #aaa;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2 id="title">Signup</h2>
+
+  <input type="text" id="username" placeholder="Username">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+
+  <div class="error" id="error"></div>
+
+  <button onclick="handleAuth()">Signup</button>
+
+  <div class="toggle" onclick="toggleMode()">
+    Already have an account? Login
+  </div>
+</div>
+
+<script>
+let isLogin = false;
+
+function toggleMode() {
+  isLogin = !isLogin;
+
+  document.getElementById("title").innerText = isLogin ? "Login" : "Signup";
+  document.querySelector("button").innerText = isLogin ? "Login" : "Signup";
+  document.querySelector(".toggle").innerText = isLogin 
+    ? "Don't have an account? Signup" 
+    : "Already have an account? Login";
+
+  document.getElementById("username").style.display = isLogin ? "none" : "block";
+}
+
+function handleAuth() {
+  let username = document.getElementById("username").value;
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+  let error = document.getElementById("error");
+
+  error.innerText = "";
+
+  if (!email || !password || (!isLogin && !username)) {
+    error.innerText = "All fields are required";
+    return;
+  }
+
+  if (password.length < 6) {
+    error.innerText = "Password must be at least 6 characters";
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  if (isLogin) {
+    let user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+      alert("Login Successful ✅");
+    } else {
+      error.innerText = "Invalid email or password";
+    }
+
+  } else {
+    let exists = users.find(u => u.email === email);
+
+    if (exists) {
+      error.innerText = "User already exists";
+      return;
+    }
+
+    users.push({ username, email, password });
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Signup Successful ✅");
+  }
+}
+</script>
+
+</body>
+</html>
